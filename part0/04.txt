@@ -1,0 +1,22 @@
+title Sending a note in a traditional web app
+
+Browser->Server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note (with note data)
+Server-->Browser: HTTP 302 (found) and redirect
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+Server-->Browser: HTML code
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Server-->Browser: main.css
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+Server-->Browser: main.js
+
+note over Browser:
+Browser executs js code
+js request data from server
+end note
+
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+Server-->Browser: JSON data
+
+
+note over Browser:
+Browser starts render data 
