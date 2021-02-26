@@ -1,20 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 import Userform from "./Components/Userform";
 import UserFilter from "./Components/UserFilter";
 import UserList from "./Components/UserList";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456" },
-    { name: "Ada Lovelace", number: "39-44-5323523" },
-    { name: "Dan Abramov", number: "12-43-234345" },
-    { name: "Mary Poppendieck", number: "39-23-6423122" },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
 
+  const PERSONS_ENDPOINT = "http://localhost:3001/persons";
+  const personsHook = () => {
+    axios.get(PERSONS_ENDPOINT).then((res) => setPersons(res.data));
+  };
+
+  useEffect(personsHook, []);
   // Input handlers
 
   const handleNameChange = (e) => {
@@ -48,22 +50,27 @@ const App = () => {
     setNewNumber("");
   };
 
-  const filteredPersons = filter.length === 0 ? persons : persons.filter( person => person.name.toLowerCase().includes(filter.toLowerCase()))
+  const filteredPersons =
+    filter.length === 0
+      ? persons
+      : persons.filter((person) =>
+          person.name.toLowerCase().includes(filter.toLowerCase())
+        );
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <UserFilter filterValue={filter} handleFilter={handleFilterChange}/>
+      <UserFilter filterValue={filter} handleFilter={handleFilterChange} />
       <h3>Add new</h3>
-        <Userform
-          handleSubmit={addPerson}
-          handleNameChange={handleNameChange}
-          handleNumberChange={handleNumberChange}
-          nameValue={newName}
-          numberValue={newNumber}
-        ></Userform>
+      <Userform
+        handleSubmit={addPerson}
+        handleNameChange={handleNameChange}
+        handleNumberChange={handleNumberChange}
+        nameValue={newName}
+        numberValue={newNumber}
+      ></Userform>
       <h2>Numbers</h2>
-      <UserList personList={filteredPersons}/>
+      <UserList personList={filteredPersons} />
     </div>
   );
 };
