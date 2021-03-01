@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-	"title": "Test blog",
-	"author": "Testy McTestes",
+	"title": "Test blog 96",
+	"author": "Testy McTestes 2",
 	"url":"http://www.galtse.cx",
-	"likes": "420"
+	"likes": "4"
 }
