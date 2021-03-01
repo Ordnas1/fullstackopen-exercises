@@ -70,6 +70,13 @@ const App = () => {
         setTimeout(() => {
           setAppMessage("");
         }, 5000);
+      })
+      .catch((err) => {
+        setAppMessage(err.response.data.error);
+        setAppMessageType("error");
+        setTimeout(() => {
+          setAppMessage("");
+        }, 5000);
       });
   };
 
@@ -105,6 +112,14 @@ const App = () => {
       .then(() => {
         setAppMessage(`${newPerson.name} added successfully`);
         setAppMessageType("success");
+        setTimeout(() => {
+          setAppMessage("");
+        }, 5000);
+      })
+      .catch((err) => {
+        console.log(err.response);
+        setAppMessage(err.response.data.error);
+        setAppMessageType("error");
         setTimeout(() => {
           setAppMessage("");
         }, 5000);

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const PERSONS_ENDPOINT = "http://localhost:3001/persons";
+const PERSONS_ENDPOINT = "/api/persons";
 
 const getAll = () => axios.get(PERSONS_ENDPOINT).then((res) => res.data);
 const createPerson = (person) =>
