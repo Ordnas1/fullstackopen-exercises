@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2MDQzMWQ4YzFlZGEzZTRhODJiZmY5ZGUiLCJpYXQiOjE2MTUwMTM0MzJ9.gNKeI_ySjCIPCDv2ds8BFM7CwiU5PLrKEQOMISR-oQ4
+
+{
+	"title": "acmin blog 4fsdfsf",
+	"author": "acmeen 2",
+	"url":"http://www.galtse.cx",
+	"likes": "4"
+}
