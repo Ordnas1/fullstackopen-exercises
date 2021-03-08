@@ -8,7 +8,8 @@
     "dev": "DEBUG=bloglist; NODE_ENV=development  nodemon index.js",
     "test": " NODE_ENV=test jest --verbose --runInBand ",
     "test:api": "npm test -- tests/blog_api.test.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "start:test":"NODE_ENV=test node index.js"
   },
   "author": "Sandro Marcelo Peirano Gozalvez",
   "license": "MIT",

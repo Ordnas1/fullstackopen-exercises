@@ -26,6 +26,12 @@ app.use("/api/login", loginRouter);
 app.use("/api/blogs", blogsRouter);
 app.use("/api/users", usersRouter);
 
+if (process.env.NODE_ENV === "test") {
+  console.info("[TEST ENV] api reset endpoint enabled");
+  const testRouter = require("./controllers/testController");
+  app.use("/api/reset", testRouter);
+}
+
 app.use(errorHandler);
 
 module.exports = app;
