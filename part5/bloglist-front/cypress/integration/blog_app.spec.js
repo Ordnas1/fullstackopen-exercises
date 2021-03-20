@@ -49,7 +49,7 @@ describe("Blog App", () => {
     });
   });
 
-  describe.only("When logged in and browsing a list of blogs", function () {
+  describe("When logged in and browsing a list of blogs", function () {
     beforeEach(function () {
       cy.populateBlogs({ username: "root", password: "secret" });
       cy.login({ username: "root", password: "secret" });
@@ -72,7 +72,7 @@ describe("Blog App", () => {
         .should("have.css", "display", "none");
     });
 
-    it.only("should have its logs ordered by likes", function () {
+    it("should have its logs ordered by likes", function () {
       cy.contains("Details").click();
       cy.contains("Details").click();
 
