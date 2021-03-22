@@ -1,141 +1,148 @@
-import React, { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { initializeBlogs } from "./reducers/blogsReducer";
+import { initUserList } from "./reducers/userListReducer";
+import { setUser, logOutUser, login } from "./reducers/userReducer";
+
+//Services
 import blogService from "./services/blogs";
-import loginService from "./services/login";
 
-import Toggleable from "./components/Toggleable";
-import CreateBlogForm from "./components/CreateBlogForm";
+//Components
+import Notification from "./components/Notification";
 
-const Notification = ({ content }) => {
-  if (!content) {
-    return <div></div>;
-  } else {
-    return <div style={{ border: "1px black solid" }}>{content}</div>;
-  }
-};
+//Views
+import BlogListView from "./views/BlogListView";
+import UserInfoView from "./views/UserInfoView";
+import UserDetailView from "./views/UserDetailView";
+import BlogDetailView from "./views/BlogDetailView";
+
+// Material UI
+/* import { makeStyles } from "@material-ui/core/styles"; */
+
+import Paper from "@material-ui/core/Paper";
+import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+
+import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+
+/* const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+    "& > *": {
+      margin: theme.spacing(1),
+      width: theme.spacing(16),
+      height: theme.spacing(16),
+    },
+  },
+})); */
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  /* const classes = useStyles; */
+  const dispatch = useDispatch();
+  const notification = useSelector((state) => state.notification);
+  const user = useSelector((state) => state.user);
+
+  /* const [blogs, setBlogs] = useState([]); */
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
-  const [notif, setNotif] = useState(null);
-
-  const blogFormRef = useRef();
 
   const logOut = () => {
-    setUser(null);
-    window.localStorage.removeItem("loggedUser");
-  };
-
-  const handleNewBlog = async (e) => {
-    e.preventDefault();
-    try {
-      const newBlog = { title, author, url };
-      const responseBlog = await blogService.create(newBlog);
-      const newBlogs = blogs.concat(responseBlog);
-      setBlogs(newBlogs);
-      setNotif(`Created new blog ${newBlog.title} by ${newBlog.author}`);
-      setTitle("");
-      setAuthor("");
-      setUrl("");
-      blogFormRef.current.toggleVisible();
-      setTimeout(() => {
-        setNotif(null);
-      }, 5000);
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(logOutUser());
   };
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    try {
-      const user = await loginService.login({ username, password });
-      setUser(user);
-      setUsername("");
-      setPassword("");
-      window.localStorage.setItem("loggedUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-    } catch (error) {
-      setNotif("Failed login");
-      setTimeout(() => {
-        setNotif(null);
-      }, 5000);
-    }
+    dispatch(login({ username, password }));
   };
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem("loggedUser");
     if (loggedUser) {
-      const user = JSON.parse(loggedUser);
-      setUser(user);
-      blogService.setToken(user.token);
+      dispatch(setUser(JSON.parse(loggedUser)));
+      blogService.setToken(loggedUser.token);
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+    dispatch(initializeBlogs());
+    dispatch(initUserList());
+  }, [dispatch]);
 
   if (user === null) {
     return (
-      <div>
-        <Notification content={notif} />
-        <h2>Log in</h2>
-        <form id="loginForm" onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
+      <Container container>
+        <Notification content={notification} />
+        <Typography variant="h1">Log In</Typography>
+        <Grid
+          style={{
+            height: "80%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+          container
+          justify="center"
+          alignItems="center"
+        >
+          <Paper style={{ width: "50%" }} elevation={3}>
+            <form id="loginForm" onSubmit={handleLogin}>
+              <div>
+                username
+                <input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={({ target }) => setUsername(target.value)}
+                />
+              </div>
+              <div>
+                password
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={({ target }) => setPassword(target.value)}
+                />
+              </div>
 
-          <input type="submit" value="LOG IN" />
-        </form>
-      </div>
+              <input type="submit" value="LOG IN" />
+            </form>
+          </Paper>
+        </Grid>
+      </Container>
     );
   }
 
   return (
-    <div>
-      <Notification content={notif} />
-      <Toggleable buttonLabel="New Blog" ref={blogFormRef}>
-        <CreateBlogForm
-          handleSubmit={handleNewBlog}
-          titleValue={title}
-          authorValue={author}
-          urlvalue={url}
-          setTitle={setTitle}
-          setAuthor={setAuthor}
-          setUrl={setUrl}
-        />
-      </Toggleable>
+    <Router>
+      <div>
+        <Link to="/">Home</Link>
+        <Link to="/users">Users info</Link>
+        <span>Logged in as {user.name}</span>
+        <button onClick={logOut}>Log out</button>
+      </div>
+      <Container>
+        <Switch>
+          <Route path="/users/:id">
+            <UserDetailView />
+          </Route>
+          <Route path="/users">
+            <UserInfoView />
+          </Route>
+          <Route path="/blogs/:id">
+            <BlogDetailView />
+          </Route>
+          <Route path="/">
+            <BlogListView />
+          </Route>
+        </Switch>
 
-      <h2>blogs</h2>
-      {blogs
-        .sort((a, b) => b.likes - a.likes)
-        .map((blog) => (
-          <Blog key={blog.id} blog={blog} />
-        ))}
-      <h4>Logged in as {user.name}</h4>
-      <button onClick={logOut}>Log out</button>
-    </div>
+        <h4>Logged in as {user.name}</h4>
+        <button onClick={logOut}>Log out</button>
+      </Container>
+    </Router>
   );
 };
 

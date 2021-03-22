@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
 
-import blogService from "../services/blogs";
+/* import blogService from "../services/blogs";
 
-import Like from "./Like";
+import Like from "./Like"; */
 
 const blogStyle = {
   paddingTop: 10,
@@ -13,23 +14,17 @@ const blogStyle = {
   display: "block",
 };
 
-const deletedStyle = {
+/* const deletedStyle = {
   display: "none",
-};
+}; */
 
 const Blog = ({ blog }) => {
-  const [visible, setVisible] = useState(false);
-  const [blogState, setBlog] = useState(blog);
-  const [deleted, setDeleted] = useState(false);
-
-  const isBlogUser =
+  /* const isBlogUser =
     (JSON.parse(window.localStorage.getItem("loggedUser"))
       ? JSON.parse(window.localStorage.getItem("loggedUser")).username
-      : "") === (blogState.user ? blogState.user.username : "");
+      : "") === (blogState.user ? blogState.user.username : ""); */
 
-  const handleClick = () => setVisible(!visible);
-
-  const handleLike = async () => {
+  /* const handleLike = async () => {
     const newLikes = blogState.likes + 1;
     console.log(blog);
     const blogToUpdate = {
@@ -38,31 +33,30 @@ const Blog = ({ blog }) => {
       author: blog.author,
       title: blog.title,
       url: blog.url,
-    };
+    }; */
 
-    await blogService.update(blogToUpdate, blog.id);
+  /* await blogService.update(blogToUpdate, blog.id); */
 
-    const newBlogState = JSON.parse(JSON.stringify(blogState));
-    newBlogState.likes++;
-    setBlog(newBlogState);
-  };
+  /* const newBlogState = JSON.parse(JSON.stringify(blogState));
+  newBlogState.likes++;
+  setBlog(newBlogState); */
 
-  const handleRemove = async () => {
+  /* const handleRemove = async () => {
     if (
       window.confirm(`Removing blog ${blogState.title} by ${blogState.author}`)
     ) {
       setDeleted(true);
       await blogService.destroy(blogState.id);
     }
-  };
-  if (!visible) {
-    return (
-      <div style={deleted ? deletedStyle : blogStyle} className="defaultState blog">
-        {blogState.title} {blogState.author}
-        <button onClick={handleClick}>Details</button>
-      </div>
-    );
-  } else if (isBlogUser) {
+  }; */
+  return (
+    <div style={blogStyle} className="defaultState blog">
+      <Link to={`/blogs/${blog.id}`}>
+        {blog.title} by {blog.author}
+      </Link>
+    </div>
+  );
+  /*  if (isBlogUser) {
     return (
       <div style={deleted ? deletedStyle : blogStyle} className="blog">
         {blogState.title}{" "}
@@ -90,7 +84,7 @@ const Blog = ({ blog }) => {
         <div>{blogState.author}</div>
       </div>
     );
-  }
+  } */
 };
 
 export default Blog;

@@ -35,13 +35,14 @@ blogsRouter.post("/", async (request, response) => {
   };
 
   const blog = new Blog(newBlog);
-  const result = await blog.save();
 
-  await User.findByIdAndUpdate(user.id, {
-    blogs: user.blogs.concat(result.id),
-  });
+  blog.user = user;
+  const savedBlog = await blog.save();
 
-  response.status(201).send(result);
+  user.blogs = user.blogs.concat(savedBlog._id);
+  await user.save();
+
+  response.status(201).json(savedBlog);
 });
 
 blogsRouter.delete("/:id", async (request, response) => {
