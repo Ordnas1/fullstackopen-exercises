@@ -1,0 +1,3 @@
+{
+  "eslint.workingDirectories": ["./part9/intro", "./part9/patientor","./part9/patientor-frontend"]
+}
